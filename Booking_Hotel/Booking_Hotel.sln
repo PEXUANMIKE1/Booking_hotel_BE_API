@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking_Hotel", "Booking_Hotel\Booking_Hotel.csproj", "{329C8D34-6D46-41AC-A950-9A814BD3F91C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booking_Hotel", "Booking_Hotel\Booking_Hotel.csproj", "{329C8D34-6D46-41AC-A950-9A814BD3F91C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Back-end_API", "Back-end_API\Back-end_API.csproj", "{9ACDDDB7-5FDD-4C22-BF74-47BD13BAAA0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Back-end_API", "Back-end_API\Back-end_API.csproj", "{9ACDDDB7-5FDD-4C22-BF74-47BD13BAAA0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
