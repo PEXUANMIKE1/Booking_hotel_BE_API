@@ -28,3 +28,4 @@ D:\Student\DATN\Source\Booking_Hotel\Booking_Hotel\obj\Debug\net8.0\refint\Booki
 D:\Student\DATN\Source\Booking_Hotel\Booking_Hotel\obj\Debug\net8.0\Booking_Hotel.pdb
 D:\Student\DATN\Source\Booking_Hotel\Booking_Hotel\obj\Debug\net8.0\Booking_Hotel.genruntimeconfig.cache
 D:\Student\DATN\Source\Booking_Hotel\Booking_Hotel\obj\Debug\net8.0\ref\Booking_Hotel.dll
+D:\Student\DATN\Source\Booking_Hotel\Booking_Hotel\obj\Debug\net8.0\Booking_Hotel.sourcelink.json
