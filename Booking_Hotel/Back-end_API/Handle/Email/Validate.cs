@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Back_end_API.Handle
+namespace Back_end_API.Handle.Email
 {
     public class Validate
     {
