@@ -16,6 +16,7 @@ namespace Back_end_API.Entites
         public Gender? Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
+        public string CCCD { get; set; }
         public int RoleId { get; set; }
         public Role? Role { get; set; }
     }

@@ -11,6 +11,9 @@ namespace Back_end_API.Services.Interface
         DataResponse_Token GenerateAccessToken(User user);
         ResponseObject<DataResponse_Token> Login (Request_Login request);
         DataResponse_Token RenewAccessToken (Request_RenewAccessToken request);
-        IQueryable<DataResponse_User> GetAll();
+        ResponseObject<IQueryable<DataResponse_User>> GetAll();
+        ResponseObject<DataResponse_User> UpdateUser(int id, Request_Register request);
+        ResponseObject<DataResponse_User> UpdateRole(int UserId, int RoleID);
+        ResponseObject<IQueryable<DataResponse_User>> Delete(int UserId);
     }
 }

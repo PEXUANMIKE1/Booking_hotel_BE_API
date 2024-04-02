@@ -25,10 +25,24 @@ namespace Back_end_API.Controller
             return Ok(_userService.Login(login));
         }
         [HttpGet("/api/auth/get-all")]
-        [Authorize(Roles = "Admin")]
         public IActionResult GetAll()
         {
             return Ok(_userService.GetAll());
+        }
+        [HttpPut("/api/auth/update-user")]
+        public IActionResult Update([FromForm] int id, [FromForm] Request_Register request)
+        {
+            return Ok(_userService.UpdateUser(id, request));
+        }
+        [HttpPut("/api/auth/update-role")]
+        public IActionResult UpdateRole([FromForm] int UserID, [FromForm] int RoleID)
+        {
+            return Ok(_userService.UpdateRole(UserID, RoleID));
+        }
+        [HttpDelete("/api/auth/delete-user")]
+        public IActionResult DeleteUser([FromForm] int UserID)
+        {
+            return Ok(_userService.Delete(UserID));
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Back_end_API
             builder.Services.AddScoped<AppDbContext>();
             builder.Services.AddScoped<UserConverter>();
             builder.Services.AddScoped<ResponseObject<DataResponse_User>>();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
             {

@@ -13,5 +13,6 @@ namespace Back_end_API.Payload.DataRequests
         public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
+        public string CCCD { get; set; }
     }
 }

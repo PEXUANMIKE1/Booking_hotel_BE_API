@@ -22,6 +22,7 @@ namespace Back_end_API.Payload.Converters
                 LastName = user.LastName,
                 Gender = user.Gender,
                 Address = user.Address,
+                CCCD = user.CCCD,
                 RoleName = _context.Roles.SingleOrDefault(x => x.ID == user.RoleId).RoleName
             };
         }
