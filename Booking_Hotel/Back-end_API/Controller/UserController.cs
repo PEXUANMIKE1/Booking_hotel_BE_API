@@ -24,6 +24,11 @@ namespace Back_end_API.Controller
         {
             return Ok(_userService.Login(login));
         }
+        [HttpPost("/api/auth/Logout")]
+        public IActionResult Logout()
+        {
+            return Ok(_userService.Logout());
+        }
         [HttpGet("/api/auth/get-all")]
         public IActionResult GetAll()
         {

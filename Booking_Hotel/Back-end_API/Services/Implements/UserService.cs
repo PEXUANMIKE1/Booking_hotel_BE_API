@@ -17,6 +17,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using BCryptNet = BCrypt.Net.BCrypt;
+using Back_end_API.Migrations;
 
 namespace Back_end_API.Services.Implements
 {
@@ -132,7 +133,7 @@ namespace Back_end_API.Services.Implements
             var user = _context.Users.SingleOrDefault(x => x.UserName.Equals(request.UserName));
             if (user == null)
             {
-                return responseObject_Token.ResponseError(StatusCodes.Status400BadRequest, "Có lỗi trong quá trình xử lý!", null);
+                return responseObject_Token.ResponseError(StatusCodes.Status404NotFound, "Người dùng không tồn tại!", null);
             }
             if (string.IsNullOrWhiteSpace(request.UserName))
             {
@@ -146,15 +147,29 @@ namespace Back_end_API.Services.Implements
             return responseObject_Token.ResponseSuccess("Đăng nhập thành công", GenerateAccessToken(user));
         }
         // Đăng xuất
-        public void Logout(int userId)
+        public ResponseObject<DataResponse_Token> Logout()
         {
-            var refreshToken = _context.RefeshTokens.SingleOrDefault(x => x.UserId == userId);
-            if (refreshToken != null)
+            var httpcontext = _httpContextAccessor.HttpContext;
+            if(httpcontext != null && httpcontext.User.Identity.IsAuthenticated)
             {
-                // Thay đổi thời gian hết hạn của token thành thời điểm hiện tại
-                refreshToken.ExpiredTime = DateTime.Now;
-                _context.SaveChanges();
+                //lấy UserID đang đăng nhập
+                var userIDLogin = httpcontext.User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIDLogin != null && int.TryParse(userIDLogin.Value, out int userID))
+                {
+                    var refreshToken = _context.RefeshTokens.SingleOrDefault(x => x.UserId == userID);
+                    //Xóa refeshToken trên DB
+                    if (refreshToken != null)
+                    {
+                        _context.RefeshTokens.Remove(refreshToken);
+                        _context.SaveChanges();
+                    }
+                    //xóa AccessToken phía client
+                    httpcontext.Session.Remove("AccessToken");
+                    return responseObject_Token.ResponseSuccess("Đăng xuất thành công", null);
+                }
+                return responseObject_Token.ResponseError(StatusCodes.Status401Unauthorized,"Đăng xuất thành công", null);
             }
+            return responseObject_Token.ResponseError(StatusCodes.Status401Unauthorized, "Tài khoản chưa xác thực", null);
         }
         //Làm mới token
         public DataResponse_Token RenewAccessToken(Request_RenewAccessToken request)
@@ -168,7 +183,7 @@ namespace Back_end_API.Services.Implements
             }
             return GenerateAccessToken(user);
         }
-        //Get All
+        //Get All (chỉ Admin)
         public ResponseObject<IQueryable<DataResponse_User>> GetAll()
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
@@ -207,6 +222,7 @@ namespace Back_end_API.Services.Implements
                 Data = null
             };
         }
+        //Sửa Người dùng (chỉ Admin)
         public ResponseObject<DataResponse_User> UpdateUser(int id, Request_Register Request)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
@@ -266,6 +282,7 @@ namespace Back_end_API.Services.Implements
             }
             return responseObject_User.ResponseError(StatusCodes.Status401Unauthorized, "Bạn không có quyền hạn để dùng chức năng này!", null);
         }
+        //Sửa quyền hạn (chỉ Admin)
         public ResponseObject<DataResponse_User> UpdateRole(int UserId, int RoleIDUpdate)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
@@ -294,9 +311,8 @@ namespace Back_end_API.Services.Implements
             {
                 return responseObject_User.ResponseError(StatusCodes.Status401Unauthorized, "Bạn không có quyền hạn để dùng chức năng này!", null);
             }
-
         }
-
+        //Xóa Người dùng (chỉ Admin)
         public ResponseObject<IQueryable<DataResponse_User>> Delete(int UserId)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;

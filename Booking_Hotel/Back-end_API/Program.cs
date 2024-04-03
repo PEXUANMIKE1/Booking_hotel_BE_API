@@ -28,7 +28,8 @@ namespace Back_end_API
             builder.Services.AddScoped<UserConverter>();
             builder.Services.AddScoped<ResponseObject<DataResponse_User>>();
             builder.Services.AddHttpContextAccessor();
-
+            builder.Services.AddSession();
+            builder.Services.AddDistributedMemoryCache();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -49,7 +50,7 @@ namespace Back_end_API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseSession();
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

@@ -10,6 +10,7 @@ namespace Back_end_API.Services.Interface
         ResponseObject<DataResponse_User> Register(Request_Register request);
         DataResponse_Token GenerateAccessToken(User user);
         ResponseObject<DataResponse_Token> Login (Request_Login request);
+        ResponseObject<DataResponse_Token> Logout ();
         DataResponse_Token RenewAccessToken (Request_RenewAccessToken request);
         ResponseObject<IQueryable<DataResponse_User>> GetAll();
         ResponseObject<DataResponse_User> UpdateUser(int id, Request_Register request);
