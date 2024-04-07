@@ -5,11 +5,11 @@ namespace Back_end_API.Enumerates
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum StatusBooking
     {
+        //đã hủy
         Canceled = 0,
+        //đã nhận
         Received = 1,
-        Confirmed = 2,
-        Paid = 3,
-        Checked_out = 4,
-        Pending = 5
+        //Đang chờ
+        Pending = 2
     }
 }

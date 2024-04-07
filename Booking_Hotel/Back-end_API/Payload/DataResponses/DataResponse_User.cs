@@ -13,6 +13,7 @@ namespace Back_end_API.Payload.DataResponses
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
         public string CCCD { get; set; }
+        public string Phone { get; set; }
         public string RoleName { get; set; }
     }
 }

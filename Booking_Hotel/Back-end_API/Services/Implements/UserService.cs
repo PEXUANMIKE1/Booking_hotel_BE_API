@@ -1,9 +1,10 @@
 ﻿
 using Azure.Core;
+using Back_end_API.Context;
 using Back_end_API.Entites;
 using Back_end_API.Handle;
 using Back_end_API.Handle.Email;
-using Back_end_API.Handle.CCCD;
+using Back_end_API.Handle.Number;
 using Back_end_API.Payload.Converters;
 using Back_end_API.Payload.DataRequests;
 using Back_end_API.Payload.DataResponses;
@@ -17,26 +18,27 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using BCryptNet = BCrypt.Net.BCrypt;
-using Back_end_API.Migrations;
 
 namespace Back_end_API.Services.Implements
 {
-    public class UserService : BaseService, IUserService
+    public class UserService : IUserService
     {
         private readonly ResponseObject<DataResponse_User> responseObject_User;
         private readonly ResponseObject<DataResponse_Token> responseObject_Token;
         private readonly UserConverter _userConverter;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public UserService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public readonly AppDbContext _context;
+        public UserService(ResponseObject<DataResponse_User> responseObject_User, ResponseObject<DataResponse_Token> responseObject_Token, UserConverter userConverter, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, AppDbContext context)
         {
-            responseObject_User = new ResponseObject<DataResponse_User>();
-            responseObject_Token = new ResponseObject<DataResponse_Token>();
-            _userConverter = new UserConverter();
+            this.responseObject_User = responseObject_User;
+            this.responseObject_Token = responseObject_Token;
+            _userConverter = userConverter;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
+
         //đăng ký
         public ResponseObject<DataResponse_User> Register(Request_Register Request)
         {
@@ -46,6 +48,7 @@ namespace Back_end_API.Services.Implements
                 || string.IsNullOrWhiteSpace(Request.LastName)
                 || string.IsNullOrWhiteSpace(Request.Address)
                 || string.IsNullOrWhiteSpace(Request.CCCD)
+                || string.IsNullOrWhiteSpace(Request.Phone)
                 || string.IsNullOrWhiteSpace(Request.Email))
             {
                 return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Vui lòng điền đẩy đủ thông tin!", null);
@@ -62,9 +65,13 @@ namespace Back_end_API.Services.Implements
             {
                 return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng Email không hợp lệ!", null);
             }
-            if (!Validate_CCCD.IsNumber(Request.CCCD))
+            if (!Validate_Number.IsNumber(Request.CCCD))
             {
                 return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng Email không hợp lệ!", null);
+            }
+            if (!Validate_Number.IsNumber(Request.Phone))
+            {
+                return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng Phone không hợp lệ!", null);
             }
             var user = new User();
             user.UserName = Request.UserName;
@@ -76,6 +83,7 @@ namespace Back_end_API.Services.Implements
             user.Gender = Request.Gender;
             user.Address = Request.Address;
             user.CCCD = Request.CCCD;
+            user.Phone = Request.Phone;
             user.RoleId = 3;
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -243,15 +251,16 @@ namespace Back_end_API.Services.Implements
                     || string.IsNullOrWhiteSpace(Request.LastName)
                     || string.IsNullOrWhiteSpace(Request.Address)
                     || string.IsNullOrWhiteSpace(Request.CCCD)
+                    || string.IsNullOrWhiteSpace(Request.Phone)
                     || string.IsNullOrWhiteSpace(Request.Email))
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Vui lòng điền đẩy đủ thông tin!", null);
                 }
-                if (_context.Users.Any(x => x.Email.Equals(Request.Email) && x.ID != user.ID))
+                if (_context.Users.Any(x => x.Email.Equals(Request.Email, StringComparison.OrdinalIgnoreCase) && !Request.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase)))
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Email đã tồn tại!", null);
                 }
-                if (_context.Users.Any(x => x.UserName.Equals(Request.UserName) && x.ID != user.ID))
+                if (_context.Users.Any(x => x.UserName.Equals(Request.UserName, StringComparison.OrdinalIgnoreCase) && !Request.UserName.Equals(user.UserName, StringComparison.OrdinalIgnoreCase)))
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Tài khoản đã tồn tại!", null);
                 }
@@ -259,13 +268,21 @@ namespace Back_end_API.Services.Implements
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng Email không hợp lệ!", null);
                 }
-                if (!Validate_CCCD.IsNumber(Request.CCCD))
+                if (!Validate_Number.IsNumber(Request.CCCD))
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng CCCD không hợp lệ!", null);
                 }
-                if (_context.Users.Any(x => x.CCCD.Equals(Request.CCCD) && x.ID != user.ID))
+                if (!Validate_Number.IsNumber(Request.Phone))
+                {
+                    return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Định dạng Phone không hợp lệ!", null);
+                }
+                if (_context.Users.Any(x => x.CCCD.Equals(Request.CCCD) && !Request.CCCD.Equals(user.CCCD)))
                 {
                     return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "CCCD này đã tồn tại!", null);
+                }
+                if (_context.Users.Any(x => x.Phone.Equals(Request.Phone) && !Request.Phone.Equals(user.Phone, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return responseObject_User.ResponseError(StatusCodes.Status400BadRequest, "Số điện thoại này đã tồn tại!", null);
                 }
                 user.UserName = Request.UserName;
                 user.Email = Request.Email;
@@ -276,6 +293,7 @@ namespace Back_end_API.Services.Implements
                 user.Gender = Request.Gender;
                 user.Address = Request.Address;
                 user.CCCD = Request.CCCD;
+                user.Phone = Request.Phone;
                 _context.Users.Update(user);
                 _context.SaveChanges();
                 return responseObject_User.ResponseSuccess("Sửa thông tin người dùng thành công!", _userConverter.EntityDTO(user));

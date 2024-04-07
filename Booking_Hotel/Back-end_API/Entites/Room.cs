@@ -13,7 +13,7 @@ namespace Back_end_API.Entites
         public Double Price { get; set; }
         public int MaxPerson { get; set; }
         public RoomStatus Status { get; set; }
-        public RoomType RoomType { get; set; }
-        public Hotel Hotel { get; set; }
+        public RoomType? RoomType { get; set; }
+        public Hotel? Hotel { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back_end_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240402025825_updatedb-v3")]
-    partial class updatedbv3
+    [Migration("20240404142909_addv1")]
+    partial class addv1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,14 +36,16 @@ namespace Back_end_API.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CheckInDate")
+                    b.Property<DateTime?>("CheckInDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double?>("Deposit")
+                        .HasColumnType("float");
+
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfPeople")
@@ -55,13 +57,16 @@ namespace Back_end_API.Migrations
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
-                    b.Property<double>("Total")
+                    b.Property<int>("StatusBooking")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusPay")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Total")
                         .HasColumnType("float");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("status")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -70,7 +75,7 @@ namespace Back_end_API.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Booking_tbl");
+                    b.ToTable("Bookings_tbl");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Comments", b =>
@@ -338,6 +343,10 @@ namespace Back_end_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
@@ -349,7 +358,7 @@ namespace Back_end_API.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User_tbl");
+                    b.ToTable("Users_tbl");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Booking", b =>

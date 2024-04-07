@@ -6,6 +6,7 @@ using Back_end_API.Payload.Response;
 using Back_end_API.Services.Implements;
 using Back_end_API.Services.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -23,10 +24,12 @@ namespace Back_end_API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<AppDbContext>();
             builder.Services.AddScoped<UserConverter>();
             builder.Services.AddScoped<ResponseObject<DataResponse_User>>();
+            builder.Services.AddScoped<ResponseObject<DataResponse_Token>>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession();
             builder.Services.AddDistributedMemoryCache();

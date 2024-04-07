@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Back_end_API.Entites
 {
-    [Table("User_tbl")]
+    [Table("Users_tbl")]
     public class User : Base
     {
         public string UserName { get; set; }
@@ -17,6 +17,7 @@ namespace Back_end_API.Entites
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
         public string CCCD { get; set; }
+        public string Phone { get; set; }
         public int RoleId { get; set; }
         public Role? Role { get; set; }
     }

@@ -7,9 +7,9 @@ namespace Back_end_API.Payload.Converters
     public class UserConverter
     {
         private readonly AppDbContext _context;
-        public UserConverter()
+        public UserConverter(AppDbContext dbContext)
         {
-            _context = new AppDbContext();
+            _context = dbContext;
         }
         public DataResponse_User EntityDTO(User user)
         {
@@ -23,6 +23,7 @@ namespace Back_end_API.Payload.Converters
                 Gender = user.Gender,
                 Address = user.Address,
                 CCCD = user.CCCD,
+                Phone = user.Phone,
                 RoleName = _context.Roles.SingleOrDefault(x => x.ID == user.RoleId).RoleName
             };
         }

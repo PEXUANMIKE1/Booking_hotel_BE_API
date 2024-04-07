@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Back_end_API.Migrations
 {
     /// <inheritdoc />
-    public partial class add : Migration
+    public partial class addv1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,7 +58,7 @@ namespace Back_end_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User_tbl",
+                name: "Users_tbl",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -71,13 +71,15 @@ namespace Back_end_API.Migrations
                     Gender = table.Column<int>(type: "int", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CCCD = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User_tbl", x => x.ID);
+                    table.PrimaryKey("PK_Users_tbl", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_User_tbl_Role_tbl_RoleId",
+                        name: "FK_Users_tbl_Role_tbl_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role_tbl",
                         principalColumn: "ID",
@@ -116,40 +118,6 @@ namespace Back_end_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Booking_tbl",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    HotelID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    status = table.Column<int>(type: "int", nullable: false),
-                    PayMethod = table.Column<int>(type: "int", nullable: false),
-                    NumberOfPeople = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Total = table.Column<double>(type: "float", nullable: false),
-                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckInDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckOutDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Booking_tbl", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Booking_tbl_Hotel_tbl_HotelID",
-                        column: x => x.HotelID,
-                        principalTable: "Hotel_tbl",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Booking_tbl_User_tbl_UserID",
-                        column: x => x.UserID,
-                        principalTable: "User_tbl",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Comments_tbl",
                 columns: table => new
                 {
@@ -170,9 +138,9 @@ namespace Back_end_API.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_tbl_User_tbl_UserID",
+                        name: "FK_Comments_tbl_Users_tbl_UserID",
                         column: x => x.UserID,
-                        principalTable: "User_tbl",
+                        principalTable: "Users_tbl",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -192,9 +160,9 @@ namespace Back_end_API.Migrations
                 {
                     table.PrimaryKey("PK_ConfirmEmail_tbl", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ConfirmEmail_tbl_User_tbl_UserId",
+                        name: "FK_ConfirmEmail_tbl_Users_tbl_UserId",
                         column: x => x.UserId,
-                        principalTable: "User_tbl",
+                        principalTable: "Users_tbl",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -214,9 +182,9 @@ namespace Back_end_API.Migrations
                 {
                     table.PrimaryKey("PK_Posts_tbl", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Posts_tbl_User_tbl_UserID",
+                        name: "FK_Posts_tbl_Users_tbl_UserID",
                         column: x => x.UserID,
-                        principalTable: "User_tbl",
+                        principalTable: "Users_tbl",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -235,21 +203,57 @@ namespace Back_end_API.Migrations
                 {
                     table.PrimaryKey("PK_RefeshToken_tbl", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_RefeshToken_tbl_User_tbl_UserId",
+                        name: "FK_RefeshToken_tbl_Users_tbl_UserId",
                         column: x => x.UserId,
-                        principalTable: "User_tbl",
+                        principalTable: "Users_tbl",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings_tbl",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomID = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    StatusBooking = table.Column<int>(type: "int", nullable: false),
+                    StatusPay = table.Column<int>(type: "int", nullable: false),
+                    PayMethod = table.Column<int>(type: "int", nullable: false),
+                    Deposit = table.Column<double>(type: "float", nullable: true),
+                    Total = table.Column<double>(type: "float", nullable: true),
+                    NumberOfPeople = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CheckInDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckOutDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings_tbl", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Bookings_tbl_Room_tbl_RoomID",
+                        column: x => x.RoomID,
+                        principalTable: "Room_tbl",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_tbl_Users_tbl_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users_tbl",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Booking_tbl_HotelID",
-                table: "Booking_tbl",
-                column: "HotelID");
+                name: "IX_Bookings_tbl_RoomID",
+                table: "Bookings_tbl",
+                column: "RoomID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Booking_tbl_UserID",
-                table: "Booking_tbl",
+                name: "IX_Bookings_tbl_UserID",
+                table: "Bookings_tbl",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
@@ -288,8 +292,8 @@ namespace Back_end_API.Migrations
                 column: "RoomTypeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_tbl_RoleId",
-                table: "User_tbl",
+                name: "IX_Users_tbl_RoleId",
+                table: "Users_tbl",
                 column: "RoleId");
         }
 
@@ -297,7 +301,7 @@ namespace Back_end_API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Booking_tbl");
+                name: "Bookings_tbl");
 
             migrationBuilder.DropTable(
                 name: "Comments_tbl");
@@ -315,7 +319,7 @@ namespace Back_end_API.Migrations
                 name: "Room_tbl");
 
             migrationBuilder.DropTable(
-                name: "User_tbl");
+                name: "Users_tbl");
 
             migrationBuilder.DropTable(
                 name: "Hotel_tbl");

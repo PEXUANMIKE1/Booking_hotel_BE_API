@@ -6,7 +6,7 @@ namespace Back_end_API.Entites
     public class Posts: Base
     {
         public int UserID { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
         public int Title { get; set; }
         public int Content { get; set; }
         public DateTime PostDay { get; set; }

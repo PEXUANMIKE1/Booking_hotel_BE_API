@@ -1,6 +1,6 @@
-﻿namespace Back_end_API.Handle.CCCD
+﻿namespace Back_end_API.Handle.Number
 {
-    public class Validate_CCCD
+    public class Validate_Number
     {
         public static bool IsNumber(string str)
         {

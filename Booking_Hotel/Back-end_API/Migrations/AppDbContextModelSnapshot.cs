@@ -33,14 +33,22 @@ namespace Back_end_API.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CheckInDate")
+                    b.Property<DateTime?>("CheckInDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double?>("Deposit")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ExtraServiceID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExtraServicesID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfPeople")
@@ -52,22 +60,27 @@ namespace Back_end_API.Migrations
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
-                    b.Property<double>("Total")
+                    b.Property<int>("StatusBooking")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusPay")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Total")
                         .HasColumnType("float");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.Property<int>("status")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
+
+                    b.HasIndex("ExtraServicesID");
 
                     b.HasIndex("RoomID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Booking_tbl");
+                    b.ToTable("Bookings_tbl");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Comments", b =>
@@ -127,6 +140,40 @@ namespace Back_end_API.Migrations
                     b.ToTable("ConfirmEmail_tbl");
                 });
 
+            modelBuilder.Entity("Back_end_API.Entites.ExtraServices", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<bool>("CarRental")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Gym")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Maximum")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Meals")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Parking")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Spa")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TourGuide")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ExtraServices_tbl");
+                });
+
             modelBuilder.Entity("Back_end_API.Entites.Hotel", b =>
                 {
                     b.Property<int>("ID")
@@ -155,12 +202,38 @@ namespace Back_end_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LocationsID")
+                        .HasColumnType("int");
+
                     b.Property<double>("PriceLow")
                         .HasColumnType("float");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("LocationsID");
+
                     b.ToTable("Hotel_tbl");
+                });
+
+            modelBuilder.Entity("Back_end_API.Entites.Locations", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Locations_tbl");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Posts", b =>
@@ -335,6 +408,10 @@ namespace Back_end_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
@@ -346,11 +423,15 @@ namespace Back_end_API.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User_tbl");
+                    b.ToTable("Users_tbl");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Booking", b =>
                 {
+                    b.HasOne("Back_end_API.Entites.ExtraServices", "ExtraServices")
+                        .WithMany()
+                        .HasForeignKey("ExtraServicesID");
+
                     b.HasOne("Back_end_API.Entites.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
@@ -362,6 +443,8 @@ namespace Back_end_API.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExtraServices");
 
                     b.Navigation("Room");
 
@@ -396,6 +479,15 @@ namespace Back_end_API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Back_end_API.Entites.Hotel", b =>
+                {
+                    b.HasOne("Back_end_API.Entites.Locations", "Locations")
+                        .WithMany()
+                        .HasForeignKey("LocationsID");
+
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("Back_end_API.Entites.Posts", b =>

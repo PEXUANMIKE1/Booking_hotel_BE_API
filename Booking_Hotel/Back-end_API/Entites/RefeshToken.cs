@@ -9,6 +9,6 @@ namespace Back_end_API.Entites
         public DateTime ExpiredTime { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }
